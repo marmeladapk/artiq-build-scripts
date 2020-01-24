@@ -1,12 +1,9 @@
 #!/bin/bash
 
 #TODO
-# What if build fails? Do not update latest
-# Not all messages end up in log
-# Vivado log is suppressed and shows only in file log
-# Make a flash tool
 # Make a enviroment restore
 # Add support for Kasli generic
+# If modified package is not used do not query git
 
 orig_pwd=`pwd`
 
@@ -44,7 +41,7 @@ if [ -z ${variant+x} ]; then
   elif [ "$board" == "sayma_rtm" ]; then
     variant="satellite"
   elif [ "$board" == "kasli" ]; then
-    variant="opticlock"
+    variant="tester"
   fi
 fi
 if [ -z ${hwrev+x} ]; then
@@ -129,13 +126,16 @@ if ! [ "$board" == "sayma_rtm" ]; then
 fi
  
 # echo $call
-python $call > build_log.txt
+python $call |& tee build_log.txt
 
-linkname="../${board}_${variant}_${hwrev}_latest"
+linkname="${board}_${variant}_${hwrev}_latest"
 # echo $linkname
 
-rm -f $linkname
-ln -sf `pwd` $linkname
-
+if [ -f "$variant/gateware/top.bit" ]; then
+  rm -f "../$linkname"
+  ln -sf `pwd` "../$linkname"
+else
+  echo "Build failed, not updating $linkname link."
+fi
 cd $orig_pwd
 

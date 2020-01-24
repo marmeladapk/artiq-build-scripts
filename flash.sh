@@ -29,7 +29,7 @@ if [ -z ${variant+x} ]; then
   if [ "$board" == "sayma_amc" ]; then
     variant="satellite"
   elif [ "$board" == "kasli" ]; then
-    variant="opticlock"
+    variant="tester"
   fi
 fi
 if [ -z ${hwrev+x} ]; then
