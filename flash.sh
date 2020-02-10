@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Add support to partial flashes and other goodies of artiq_flash
+# Add support for kasli_generic
 
 orig_pwd=`pwd`
 
@@ -17,6 +18,8 @@ while [ x != "x$1" ] ; do
     board="sayma_rtm"
   elif [ "$1" == "kasli" ]; then
     board="kasli"
+  elif [ "$1" == "metlino" ]; then
+    board="metlino"
   fi
   shift
 done
@@ -30,6 +33,8 @@ if [ -z ${variant+x} ]; then
     variant="satellite"
   elif [ "$board" == "kasli" ]; then
     variant="tester"
+  elif [ "$board" == "metlino" ]; then
+    variant="master"
   fi
 fi
 if [ -z ${hwrev+x} ]; then
@@ -37,6 +42,8 @@ if [ -z ${hwrev+x} ]; then
     hwrev="v2.0"
   elif [ "$board" == "kasli" ]; then
     hwrev="v1.1"
+  elif [ "$board" == "metlino" ]; then
+    hwrev="v1.0"
   fi
 fi
 
