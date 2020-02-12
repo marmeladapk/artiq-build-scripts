@@ -45,6 +45,12 @@ if [ -z ${board+x} ]; then
   echo "Which board? (amc rtm metlino kasli kasli_generic)"
   exit 1
 fi
+if [ "$board" == "kasli_generic" ]; then
+  board_dir="kasli"
+else
+  board_dir=$board
+fi
+mkdir -p $board_dir
 
 if [ "$board" == "kasli_generic" ]; then
   variant=`cat $json_file | python3 -c "import sys, json; print(json.load(sys.stdin)['variant'])"`
@@ -111,11 +117,9 @@ fi
 
 # echo $name
 
-mkdir $name
+mkdir $board_dir/$name
 
-cd $name
-
-cp $orig_pwd/$json_file .
+cd $board_dir/$name
 
 echo -e "Build:\n$board $variant $hwrev $without_sawg $no_gateware" >> environment.txt
 if ! [ -z ${note+x} ]; then
@@ -137,7 +141,7 @@ echo `cat /home/pawel/artiq-dev/start_nix_shell.sh` >> environment.txt
 if ! [ -z ${no_gateware+x} ]; then
     mkdir -p $variant
     cd $variant
-    link="../../${board}_${variant}_${hwrev}_latest"
+    link="../../../${board}_${variant}_${hwrev}_latest"
     latest=`readlink $link`
     ln -s $latest/$variant/gateware gateware
     cd ..
@@ -146,6 +150,7 @@ fi
 call=" -m artiq.gateware.targets.$board --output-dir=. $no_gateware $without_sawg"
 if [ "$board" == "kasli_generic" ]; then
   call+=" $orig_pwd/$json_file"
+  cp $orig_pwd/$json_file .
 fi
 if ! [[ "$board" == "sayma_rtm" || "$board" == "metlino" || "$board" == "kasli_generic" ]]; then
   call+=" -V $variant"
