@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# Add support to partial flashes and other goodies of artiq_flash
-# Add support for kasli_generic
-
 orig_pwd=`pwd`
+flash_commands=""
 
 while [ x != "x$1" ] ; do
   if [ "$1" == "-V" ]; then
@@ -22,6 +20,11 @@ while [ x != "x$1" ] ; do
     board="kasli_generic"
   elif [ "$1" == "metlino" ]; then
     board="metlino"
+  elif [ "$1" == "-H" ]; then
+    remote="-H $2"
+    shift
+  elif [[ "$1" = "gateware" || "$1" = "rtm_gateware" || "$1" = "bootloader" || "$1" = "firmware" || "$1" = "load" || "$1" = "rtm_load" || "$1" = "erase" || "$1" = "start" ]]; then
+    flash_commands+=" $1"
   fi
   shift
 done
@@ -59,7 +62,7 @@ cd $linkname
 if [ "$board" == "sayma_amc" ]; then
     board="sayma"
     if ! [ -e "rtm" ]; then
-        link="../sayma_rtm_satellite_${hwrev}_latest"
+        link="../../sayma_rtm_satellite_${hwrev}_latest"
         latest=`readlink $link`
         ln -s $latest rtm
     fi
@@ -69,6 +72,6 @@ if [ "$board" == "kasli_generic" ]; then
   board="kasli"
 fi
 
-artiq_flash -t $board --srcbuild -d . -V $variant
+artiq_flash -t $board --srcbuild -d . -V $variant $remote $flash_commands
 
 cd $orig_pwd

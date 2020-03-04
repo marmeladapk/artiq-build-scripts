@@ -166,8 +166,8 @@ linkname="${board}_${variant}_${hwrev}_latest"
 # echo $linkname
 
 if [ -f "$variant/gateware/top.bit" ] || [ -f "gateware/top.bit" ]; then
-  rm -f "../$linkname"
-  ln -sf `pwd` "../$linkname"
+  rm -f "../../$linkname"
+  ln -sf `pwd` "../../$linkname"
 else
   echo "Build failed, not updating $linkname link."
 fi
