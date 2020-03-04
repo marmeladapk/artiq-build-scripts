@@ -1,6 +1,9 @@
 #!/bin/bash
 
-artiq=0
+# TODO
+# Patch pythonpath with new repositories
+# Add option to automatically rebuild or just to drop in shell
+# Add option to run a new build on top of this one
 
 while IFS="" read -r p || [ -n "$p" ]
 do
